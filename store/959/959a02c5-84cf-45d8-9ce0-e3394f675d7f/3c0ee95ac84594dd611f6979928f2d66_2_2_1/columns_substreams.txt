@@ -1,0 +1,11 @@
+columns substreams version: 1
+4 columns:
+1 substreams for column `key`:
+	key
+2 substreams for column `value`:
+	value.null
+	value
+1 substreams for column `created_at`:
+	created_at
+1 substreams for column `updated_at`:
+	updated_at

@@ -1,0 +1,2 @@
+class LocationNetwork < CloudControllerRecord
+end

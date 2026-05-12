@@ -1,0 +1,19 @@
+columns substreams version: 1
+8 columns:
+1 substreams for column `ts`:
+	ts
+1 substreams for column `org_id`:
+	org_id
+1 substreams for column `device_id`:
+	device_id
+1 substreams for column `uplink_id`:
+	uplink_id
+1 substreams for column `uplink_type`:
+	uplink_type
+1 substreams for column `sum_latency`:
+	sum_latency
+2 substreams for column `sum_loss`:
+	sum_loss.sparse.idx
+	sum_loss
+1 substreams for column `samples`:
+	samples

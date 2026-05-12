@@ -1,0 +1,2 @@
+class Tag < CloudControllerRecord
+end

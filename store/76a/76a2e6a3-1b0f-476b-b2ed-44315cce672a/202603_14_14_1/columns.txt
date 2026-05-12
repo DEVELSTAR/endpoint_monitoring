@@ -1,0 +1,10 @@
+columns format version: 1
+8 columns:
+`ts` DateTime('UTC')
+`org_id` String
+`device_id` String
+`uplink_id` String
+`uplink_type` String
+`sum_latency` Float64
+`sum_loss` Decimal(18, 3)
+`samples` UInt64

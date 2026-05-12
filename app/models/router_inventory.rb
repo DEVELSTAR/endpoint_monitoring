@@ -1,0 +1,2 @@
+class RouterInventory < CloudControllerRecord
+end

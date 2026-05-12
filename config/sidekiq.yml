@@ -1,0 +1,8 @@
+:concurrency: 5
+:queues:
+  - default
+  - critical
+:scheduler:
+  enabled: true
+  schedule:
+    # Add scheduled jobs here if needed

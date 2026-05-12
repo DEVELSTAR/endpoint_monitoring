@@ -1,0 +1,53 @@
+ATTACH MATERIALIZED VIEW _ UUID 'e5791026-d0bf-498a-abe6-4e5d290e015e' TO default.router_metrics_rollup
+(
+    `ts` DateTime('UTC'),
+    `org_id` String,
+    `endpoint_id` String,
+    `host` String,
+    `device_id` String,
+    `isp` String,
+    `region` String,
+    `location_network_id` String,
+    `router_inventory_id` String,
+    `uplink_id` String,
+    `uplink_type` String,
+    `sum_latency` Int64,
+    `sum_loss` Decimal(38, 3),
+    `good_count` UInt64,
+    `warning_count` UInt64,
+    `critical_count` UInt64,
+    `down_count` UInt64,
+    `samples` UInt64
+)
+AS SELECT
+    toStartOfInterval(ts, toIntervalMinute(5)) AS ts,
+    org_id,
+    endpoint_id,
+    host,
+    device_id,
+    isp,
+    region,
+    location_network_id,
+    router_inventory_id,
+    uplink_id,
+    uplink_type,
+    sum(latency_ms) AS sum_latency,
+    sum(loss_pct) AS sum_loss,
+    countIf(status = 1) AS good_count,
+    countIf(status = 2) AS warning_count,
+    countIf(status = 3) AS critical_count,
+    countIf(status = 4) AS down_count,
+    count() AS samples
+FROM default.router_metrics_raw
+GROUP BY
+    ts,
+    device_id,
+    host,
+    endpoint_id,
+    region,
+    location_network_id,
+    router_inventory_id,
+    isp,
+    org_id,
+    uplink_id,
+    uplink_type

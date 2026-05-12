@@ -1,0 +1,42 @@
+columns substreams version: 1
+18 columns:
+1 substreams for column `ts`:
+	ts
+1 substreams for column `org_id`:
+	org_id
+1 substreams for column `endpoint_id`:
+	endpoint_id
+1 substreams for column `host`:
+	host
+1 substreams for column `device_id`:
+	device_id
+2 substreams for column `isp`:
+	isp.sparse.idx
+	isp
+2 substreams for column `region`:
+	region.sparse.idx
+	region
+1 substreams for column `location_network_id`:
+	location_network_id
+2 substreams for column `router_inventory_id`:
+	router_inventory_id.sparse.idx
+	router_inventory_id
+1 substreams for column `latitude`:
+	latitude
+1 substreams for column `longitude`:
+	longitude
+1 substreams for column `uplink_id`:
+	uplink_id
+1 substreams for column `uplink_type`:
+	uplink_type
+1 substreams for column `latency_ms`:
+	latency_ms
+2 substreams for column `loss_pct`:
+	loss_pct.sparse.idx
+	loss_pct
+1 substreams for column `http_status`:
+	http_status
+1 substreams for column `tcp_status`:
+	tcp_status
+1 substreams for column `status`:
+	status

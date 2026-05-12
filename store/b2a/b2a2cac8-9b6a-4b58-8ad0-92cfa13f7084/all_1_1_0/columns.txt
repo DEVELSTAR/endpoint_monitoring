@@ -1,0 +1,19 @@
+columns format version: 1
+17 columns:
+`ts` DateTime('UTC')
+`org_id` String
+`endpoint_id` String
+`host` String
+`device_id` String
+`isp` String
+`region` String
+`location_network_id` String
+`router_inventory_id` String
+`latitude` String
+`longitude` String
+`uplink_id` String
+`uplink_type` String
+`latency_ms` Int32
+`loss_pct` Float32
+`http_status` Int32
+`tcp_status` String

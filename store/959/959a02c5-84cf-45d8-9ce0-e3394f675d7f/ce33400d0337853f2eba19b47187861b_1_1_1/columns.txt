@@ -1,0 +1,6 @@
+columns format version: 1
+4 columns:
+`key` String
+`value` Nullable(String)
+`created_at` DateTime
+`updated_at` DateTime

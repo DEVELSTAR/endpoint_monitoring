@@ -1,0 +1,61 @@
+default: &default
+  adapter: mysql2
+  encoding: utf8mb4
+  pool: 5
+  host: <%= ENV['host'] || '127.0.0.1' %>
+
+clickhouse_default: &clickhouse_default
+  adapter: clickhouse
+  database: <%= ENV.fetch('CLICKHOUSE_DB', 'default') %>
+  username: <%= ENV['CLICKHOUSE_USER'] %>
+  host: <%= ENV.fetch('CLICKHOUSE_HOST', '127.0.0.1') %>
+  port: <%= ENV.fetch('CLICKHOUSE_PORT', 8123) %>
+  password: <%= ENV['CLICKHOUSE_PASSWORD'] %>
+  migrations_paths: db/migrate_clickhouse
+
+development:
+  primary: # MySQL 8.0.43
+    <<: *default
+    database: <%= ENV['database_dev_primary'] %>
+    username: <%= ENV['username_dev_primary'] %>
+    password: <%= ENV['password_dev_primary'] %>
+    host: <%= ENV['database_dev_url'] %>
+    port: 3308
+
+  legacy: # MySQL 5.7
+    <<: *default
+    database: <%= ENV['database_dev_legacy'] %>
+    username: <%= ENV['username_dev_legacy'] %>
+    password: <%= ENV['password_dev_legacy'] %>
+    host: <%= ENV['database_dev_url'] %>
+    port: 3306
+    schema_dump: false
+    migrations_paths: []
+    database_tasks: false
+
+  clickhouse:
+    <<: *clickhouse_default
+
+test:
+  primary: # MySQL 8.0.43
+    <<: *default
+    database: <%= ENV['database_test_primary'] %>
+    username: <%= ENV['username_test_primary'] %>
+    password: <%= ENV['password_test_primary'] %>
+    host: <%= ENV['database_test_url'] %>
+    port: 3308
+
+  legacy: # MySQL 5.7
+    <<: *default
+    database: <%= ENV['database_test_legacy'] %>
+    username: <%= ENV['username_test_legacy'] %>
+    password: <%= ENV['password_test_legacy'] %>
+    host: <%= ENV['database_test_url'] %>
+    port: 3306
+    schema_dump: false
+    migrations_paths: []
+    database_tasks: false
+
+  clickhouse:
+    <<: *clickhouse_default
+    database: <%= ENV.fetch('CLICKHOUSE_TEST_DB', 'default_test') %>

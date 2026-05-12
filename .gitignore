@@ -1,0 +1,55 @@
+# Bundler config
+/.bundle
+
+# Environment files
+
+# Logs & tempfiles
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+/tmp/pids/*
+!/tmp/pids/.keep
+/tmp/storage/*
+!/tmp/storage/.keep
+
+# Storage (uploads in dev)
+/storage/*
+!/storage/.keep
+
+# Rails credentials
+/config/master.key
+
+# SQLite databases (if used)
+*.sqlite3
+*.sqlite3-journal
+*.sqlite3-*
+
+# Debug / Editor
+.byebug_history
+*.swp
+*.swo
+
+# Coverage reports
+/coverage/
+
+# Local system files
+.DS_Store
+.AppleDouble
+Thumbs.db
+
+# Bundler vendor
+/vendor/bundle
+
+# Node (if using JS bundling)
+node_modules/
+yarn-error.log
+
+# ===============================
+# Traefik / ACME (Let's Encrypt)
+# ===============================
+acme.json
+/acme.json
+acme.json.*
+/acme.json.*
+

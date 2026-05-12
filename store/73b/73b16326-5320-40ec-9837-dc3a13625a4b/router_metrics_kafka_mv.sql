@@ -1,0 +1,41 @@
+ATTACH MATERIALIZED VIEW _ UUID 'c4fd86f3-f96f-4616-98cf-a3aa1a4c7bfc' TO default.router_metrics_raw
+(
+    `ts` DateTime('UTC'),
+    `org_id` String,
+    `endpoint_id` String,
+    `host` String,
+    `device_id` String,
+    `isp` String,
+    `region` String,
+    `location_network_id` String,
+    `router_inventory_id` String,
+    `latitude` String,
+    `longitude` String,
+    `uplink_id` String,
+    `uplink_type` String,
+    `latency_ms` Int32,
+    `loss_pct` Float32,
+    `http_status` Int32,
+    `tcp_status` String,
+    `status` UInt8
+)
+AS SELECT
+    ts,
+    org_id,
+    endpoint_id,
+    host,
+    device_id,
+    isp,
+    region,
+    location_network_id,
+    router_inventory_id,
+    latitude,
+    longitude,
+    uplink_id,
+    uplink_type,
+    latency_ms,
+    loss_pct,
+    http_status,
+    tcp_status,
+    status
+FROM default.router_metrics_kafka
