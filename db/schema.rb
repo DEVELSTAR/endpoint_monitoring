@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_30_192930) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_11_180336) do
   create_table "endpoint_monitoring_endpoints", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "endpoint_monitoring_group_id", null: false
     t.string "name", null: false
@@ -36,9 +36,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_30_192930) do
     t.integer "organisation_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "is_all_devices", default: false
-    t.boolean "is_all_networks", default: false
-    t.boolean "is_all_tags", default: false
     t.index ["group_type"], name: "index_endpoint_monitoring_groups_on_group_type"
     t.index ["name"], name: "index_endpoint_monitoring_groups_on_name"
     t.index ["user_id", "created_at"], name: "index_endpoint_monitoring_groups_on_user_and_created_at"

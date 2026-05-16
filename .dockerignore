@@ -1,0 +1,15 @@
+.git
+.bundle
+.DS_Store
+log/*
+tmp/*
+tmp/pids/*
+tmp/storage/*
+coverage
+vendor/bundle
+node_modules
+storage/*
+data
+store
+kafka-connect.log
+

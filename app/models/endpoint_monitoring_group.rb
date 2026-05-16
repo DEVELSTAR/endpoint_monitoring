@@ -89,7 +89,7 @@ class EndpointMonitoringGroup < ApplicationRecord
 
   def cache_endpoint_thresholds
     endpoint_monitoring_endpoints.each do |endpoint|
-      thresholds = build_threshold_string_for_endpoint(endpoint)
+      thresholds = build_threshold_string(endpoint)
       $redis.hset(
         "endpoint_thresholds",
         endpoint.id,

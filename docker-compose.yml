@@ -1,0 +1,209 @@
+services:
+  # MySQL 8.0 - Primary Database
+  mysql-primary:
+    image: mysql:8.0.43
+    container_name: endpoint_monitoring_mysql_primary
+    environment:
+      MYSQL_ROOT_PASSWORD: Root@123
+      MYSQL_DATABASE: endpoint_monitoring
+      MYSQL_USER: adminuser
+      MYSQL_PASSWORD: Root@123
+    ports:
+      - "3308:3306"
+    volumes:
+      - mysql_primary_data:/var/lib/mysql
+      - ./config/mysql-primary.cnf:/etc/mysql/conf.d/custom.cnf
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pRoot@123"]
+      timeout: 20s
+      retries: 10
+
+  # MySQL 5.7 - Legacy Database
+  mysql-legacy:
+    image: mysql:5.7
+    container_name: endpoint_monitoring_mysql_legacy
+    environment:
+      MYSQL_ROOT_PASSWORD: Root@123
+      MYSQL_DATABASE: prontooss
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_legacy_data:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pRoot@123"]
+      timeout: 20s
+      retries: 10
+
+  # ClickHouse - Analytics Database
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    container_name: endpoint_monitoring_clickhouse
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - clickhouse_logs:/var/log/clickhouse-server
+      - ./config/clickhouse-default-user.xml:/etc/clickhouse-server/users.d/default-user.xml:ro
+    environment:
+      CLICKHOUSE_DB: default
+      CLICKHOUSE_USER: ""
+      CLICKHOUSE_PASSWORD: ""
+    healthcheck:
+      test: ["CMD", "clickhouse-client", "--query", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Zookeeper - Required for Kafka
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: endpoint_monitoring_zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper/data
+      - zookeeper_logs:/var/lib/zookeeper/log
+
+  # Kafka - Message Queue
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: endpoint_monitoring_kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_HOST://kafka:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD", "kafka-topics", "--bootstrap-server", "localhost:9092", "--list"]
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 60s
+
+  # Redis - Cache and Job Queue
+  redis:
+    image: redis:7-alpine
+    container_name: endpoint_monitoring_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Rails Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: endpoint_monitoring_app
+    depends_on:
+      mysql-primary:
+        condition: service_healthy
+      mysql-legacy:
+        condition: service_healthy
+      clickhouse:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+    environment:
+      RAILS_ENV: development
+      database_dev_primary: endpoint_monitoring
+      username_dev_primary: adminuser
+      password_dev_primary: Root@123
+      database_dev_url: mysql-primary
+      DB_PRIMARY_HOST: mysql-primary
+      DB_PRIMARY_PORT: 3306
+      database_dev_legacy: prontooss
+      username_dev_legacy: root
+      password_dev_legacy: Root@123
+      DB_LEGACY_HOST: mysql-legacy
+      DB_LEGACY_PORT: 3306
+      CLICKHOUSE_HOST: clickhouse
+      CLICKHOUSE_PORT: 8123
+      CLICKHOUSE_DB: default
+      CLICKHOUSE_USER: ""
+      CLICKHOUSE_PASSWORD: ""
+      KAFKA_BROKERS: kafka:9092
+      REDIS_URL: redis://redis:6379/0
+    command: bash /app/docker/entrypoint-web.sh
+
+  # Sidekiq Worker
+  sidekiq:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: endpoint_monitoring_sidekiq
+    depends_on:
+      mysql-primary:
+        condition: service_healthy
+      mysql-legacy:
+        condition: service_healthy
+      clickhouse:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+    environment:
+      RAILS_ENV: development
+      database_dev_primary: endpoint_monitoring
+      username_dev_primary: adminuser
+      password_dev_primary: Root@123
+      database_dev_url: mysql-primary
+      DB_PRIMARY_HOST: mysql-primary
+      DB_PRIMARY_PORT: 3306
+      database_dev_legacy: prontooss
+      username_dev_legacy: root
+      password_dev_legacy: Root@123
+      DB_LEGACY_HOST: mysql-legacy
+      DB_LEGACY_PORT: 3306
+      CLICKHOUSE_HOST: clickhouse
+      CLICKHOUSE_PORT: 8123
+      CLICKHOUSE_DB: default
+      CLICKHOUSE_USER: ""
+      CLICKHOUSE_PASSWORD: ""
+      KAFKA_BROKERS: kafka:9092
+      REDIS_URL: redis://redis:6379/0
+    command: bash /app/docker/entrypoint-sidekiq.sh
+
+volumes:
+  mysql_primary_data:
+  mysql_legacy_data:
+  clickhouse_data:
+  clickhouse_logs:
+  zookeeper_data:
+  zookeeper_logs:
+  kafka_data:
+  redis_data:
+  node_modules:

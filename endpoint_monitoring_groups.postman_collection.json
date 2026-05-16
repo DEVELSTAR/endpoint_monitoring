@@ -1,0 +1,271 @@
+{
+	"info": {
+		"_postman_id": "b3e5a7b1-4c1c-4b87-a10f-986ebaa4a6a9",
+		"name": "Endpoint Monitoring Groups",
+		"description": "Postman collection for managing Endpoint Monitoring Groups and their associated endpoints.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "List all groups",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/v1/endpoint_monitoring_groups?page=1&per_page=10",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"endpoint_monitoring_groups"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "per_page",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get a specific group",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/v1/endpoint_monitoring_groups/:id",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"endpoint_monitoring_groups",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a new group",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"endpoint_monitoring_group\": {\n    \"name\": \"Entertainment\",\n    \"group_type\": \"network\",\n    \"associated_resources\": [\n      \"AP:1\",\n      \"network:9\",\n      \"tag:1\"\n    ],\n    \"endpoint_monitoring_endpoints_attributes\": [\n      {\n        \"name\": \"Google\",\n        \"host\": \"google.com\",\n        \"monitoring_mode\": \"icmp\",\n        \"latency_warning\": 80,\n        \"latency_critical\": 250\n      },\n      {\n        \"name\": \"StackOverflow\",\n        \"host\": \"http://stackoverflow.com\",\n        \"monitoring_mode\": \"http\",\n        \"response_time\": 250,\n        \"acceptable_response_codes\": [\n          200,\n          204\n        ]\n      },\n      {\n        \"name\": \"Redis\",\n        \"host\": \"redis.example.net\",\n        \"monitoring_mode\": \"tcp\",\n        \"port\": 6379\n      }\n    ]\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/endpoint_monitoring_groups",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"endpoint_monitoring_groups"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update a group",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"endpoint_monitoring_group\": {\n    \"name\": \"Updated Entertainment\",\n    \"associated_resources\": [\n      \"AP:1\",\n      \"network:9\"\n    ],\n    \"endpoint_monitoring_endpoints_attributes\": [\n      {\n        \"id\": 1,\n        \"name\": \"Google DNS\",\n        \"host\": \"8.8.8.8\"\n      }\n    ]\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/endpoint_monitoring_groups/:id",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"endpoint_monitoring_groups",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a group",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/v1/endpoint_monitoring_groups/:id",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"endpoint_monitoring_groups",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reset Redis Config",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/v1/endpoint_monitoring_groups/set_ep_config",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"endpoint_monitoring_groups",
+						"set_ep_config"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sync Thresholds to Redis",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/v1/endpoint_monitoring_groups/set_ep_thresholds",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"endpoint_monitoring_groups",
+						"set_ep_thresholds"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Index Stream (SSE)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/event-stream"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/v1/endpoint_monitoring_groups/index_stream",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"endpoint_monitoring_groups",
+						"index_stream"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "{{auth_token}}",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "X-AUTH-TOKEN",
+				"type": "string"
+			},
+			{
+				"key": "in",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "your_auth_token_here",
+			"type": "string"
+		}
+	]
+}

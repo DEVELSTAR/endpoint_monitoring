@@ -19,16 +19,16 @@ development:
     database: <%= ENV['database_dev_primary'] %>
     username: <%= ENV['username_dev_primary'] %>
     password: <%= ENV['password_dev_primary'] %>
-    host: <%= ENV['database_dev_url'] %>
-    port: 3308
+    host: <%= ENV.fetch('DB_PRIMARY_HOST', ENV.fetch('database_dev_url', '127.0.0.1')) %>
+    port: <%= ENV.fetch('DB_PRIMARY_PORT', 3308) %>
 
   legacy: # MySQL 5.7
     <<: *default
     database: <%= ENV['database_dev_legacy'] %>
     username: <%= ENV['username_dev_legacy'] %>
     password: <%= ENV['password_dev_legacy'] %>
-    host: <%= ENV['database_dev_url'] %>
-    port: 3306
+    host: <%= ENV.fetch('DB_LEGACY_HOST', ENV.fetch('database_dev_url', '127.0.0.1')) %>
+    port: <%= ENV.fetch('DB_LEGACY_PORT', 3306) %>
     schema_dump: false
     migrations_paths: []
     database_tasks: false
@@ -42,16 +42,16 @@ test:
     database: <%= ENV['database_test_primary'] %>
     username: <%= ENV['username_test_primary'] %>
     password: <%= ENV['password_test_primary'] %>
-    host: <%= ENV['database_test_url'] %>
-    port: 3308
+    host: <%= ENV.fetch('TEST_DB_PRIMARY_HOST', ENV.fetch('database_test_url', '127.0.0.1')) %>
+    port: <%= ENV.fetch('TEST_DB_PRIMARY_PORT', 3308) %>
 
   legacy: # MySQL 5.7
     <<: *default
     database: <%= ENV['database_test_legacy'] %>
     username: <%= ENV['username_test_legacy'] %>
     password: <%= ENV['password_test_legacy'] %>
-    host: <%= ENV['database_test_url'] %>
-    port: 3306
+    host: <%= ENV.fetch('TEST_DB_LEGACY_HOST', ENV.fetch('database_test_url', '127.0.0.1')) %>
+    port: <%= ENV.fetch('TEST_DB_LEGACY_PORT', 3306) %>
     schema_dump: false
     migrations_paths: []
     database_tasks: false
