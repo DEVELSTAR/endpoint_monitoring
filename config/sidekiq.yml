@@ -4,5 +4,4 @@
   - critical
 :scheduler:
   enabled: true
-  schedule:
-    # Add scheduled jobs here if needed
+  schedule: {}
